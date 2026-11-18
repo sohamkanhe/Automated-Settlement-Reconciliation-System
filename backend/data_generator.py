@@ -14,6 +14,8 @@ import datetime
 from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
 from typing import List, Dict, Tuple, Any
 
+MIN_TRANSACTIONS = 300
+
 def round_cur(val: float or Decimal, places: int = 2) -> Decimal:
     """Format decimal to given decimal places using standard financial rounding."""
     d = Decimal(str(val))
@@ -30,6 +32,8 @@ def generate_reconciliation_datasets(
     and bank settlement records (including late settlements into November 2026).
     Plants the 4 required discrepancy types with deterministic, easily traceable IDs.
     """
+    if num_transactions < MIN_TRANSACTIONS:
+        raise ValueError(f"At least {MIN_TRANSACTIONS} transactions are required")
     random.seed(seed)
     
     start_date = datetime.datetime(year, month, 1, 0, 0, 0)
@@ -181,8 +185,8 @@ def generate_reconciliation_datasets(
     # GAP TYPE 2: ROUNDING DIFFERENCE THAT ONLY SHOWS WHEN SUMMED
     # (Sub-cent / Fractional Fee Aggregation Drift)
     # -------------------------------------------------------------
-    rounding_txns_count = 350
-    sample_indices = random.sample(range(len(internal_transactions) - timing_gap_count), rounding_txns_count)
+    rounding_txns_count = min(350, base_txn_count)
+    sample_indices = random.sample(range(base_txn_count), rounding_txns_count)
     
     total_plat_fee = Decimal("0.00")
     total_bank_fee = Decimal("0.00")

@@ -126,7 +126,7 @@ docker run --rm -v "${PWD}:/app" -w /app python:3.11-slim python data_generator.
 - `num_transactions`: Configurable transaction volume (default `1,200`).
 - `seed`: Random seed for deterministic reproducibility (default `42`).
 - `timing_gap_count`: Number of late-month transactions pushed to November (`12`).
-- `rounding_txns_count`: Number of transactions with sub-cent interchange variances (`350`).
+- `rounding_txns_count`: Number of transactions with sub-cent interchange variances (up to `350`).
 - `duplicates`: Injects bank duplicate settlement and platform checkout retry.
 - `orphan_refunds`: Injects 3 bank debit refunds missing original platform sales.
 

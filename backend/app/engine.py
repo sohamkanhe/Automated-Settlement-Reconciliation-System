@@ -461,10 +461,6 @@ class ReconciliationEngine:
             status="COMPLETED"
         )
 
-        self.db.add(run_record)
-        self.db.add_all(items_to_save)
-        self.db.commit()
-
         # Build Financial Waterfall Reconciled Proof
         # Reconciled Net Explanations:
         # Platform Gross Volume
@@ -487,7 +483,7 @@ class ReconciliationEngine:
         adjusted_bank_vol = total_bank_vol - bank_dup_total - orphan_refund_total
         unexplained_variance = (adjusted_platform_vol - adjusted_bank_vol).quantize(Decimal("0.01"))
 
-        return {
+        result = {
             "run_id": run_id,
             "period": f"{year}-{month:02d}",
             "metrics": {
@@ -543,3 +539,8 @@ class ReconciliationEngine:
                 {"step": "9. Net Unexplained Discrepancy", "amount": float(unexplained_variance), "type": "final"}
             ]
         }
+
+        self.db.add(run_record)
+        self.db.add_all(items_to_save)
+        self.db.commit()
+        return result

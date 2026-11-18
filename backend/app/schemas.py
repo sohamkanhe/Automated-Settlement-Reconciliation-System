@@ -1,4 +1,5 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+from data_generator import MIN_TRANSACTIONS
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from decimal import Decimal
@@ -110,7 +111,7 @@ class AuditActionSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class GenerateDataRequest(BaseModel):
-    num_transactions: int = 1200
+    num_transactions: int = Field(default=1200, ge=MIN_TRANSACTIONS)
     month: int = 10
     year: int = 2026
     seed: int = 42

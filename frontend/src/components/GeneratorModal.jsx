@@ -111,7 +111,7 @@ export default function GeneratorModal({ onClose, onGenerated }) {
               </li>
               <li className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-brand-400 shrink-0" />
-                <span>350 transactions with sub-cent fee rounding drift</span>
+                <span>Up to 350 transactions with sub-cent fee rounding drift</span>
               </li>
               <li className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-brand-400 shrink-0" />

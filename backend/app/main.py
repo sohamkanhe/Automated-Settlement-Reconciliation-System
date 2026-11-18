@@ -60,14 +60,6 @@ def startup_event():
 
 def seed_synthetic_data(db: Session, num_transactions: int = 1200, month: int = 10, year: int = 2026, seed: int = 42):
     """Seed synthetic transactions and settlements into MySQL."""
-    # Clear existing
-    db.query(AuditAction).delete()
-    db.query(ReconciliationItem).delete()
-    db.query(ReconciliationRun).delete()
-    db.query(BankSettlement).delete()
-    db.query(InternalTransaction).delete()
-    db.commit()
-
     datasets = generate_reconciliation_datasets(
         num_transactions=num_transactions,
         month=month,
@@ -82,9 +74,15 @@ def seed_synthetic_data(db: Session, num_transactions: int = 1200, month: int = 
         BankSettlement(**item) for item in datasets["bank_settlements"]
     ]
 
+    # Reconciliation commits the replacement dataset and its run together.
+    db.query(AuditAction).delete()
+    db.query(ReconciliationItem).delete()
+    db.query(ReconciliationRun).delete()
+    db.query(BankSettlement).delete()
+    db.query(InternalTransaction).delete()
+
     db.bulk_save_objects(itxn_objs)
     db.bulk_save_objects(settle_objs)
-    db.commit()
     logger.info(f"Seeded {len(itxn_objs)} internal txns and {len(settle_objs)} bank settlements.")
 
 @app.get("/api/health")
